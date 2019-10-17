@@ -106,28 +106,20 @@ public class Trolley {
     }
 
 
-    public int getMaxWeight() {
+    private int getMaxWeight() {
         return maxWeight;
     }
 
-    public int getCurrentWeight() {
+    private int getCurrentWeight() {
         return currentWeight;
     }
 
-    public void setCurrentWeight(int currentWeight) {
+    private void setCurrentWeight(int currentWeight) {
         this.currentWeight = currentWeight;
     }
 
     public PositionTrolley getCurrentPosition() {
         return currentPosition;
-    }
-
-    public void setCurrentPosition(PositionTrolley currentPosition) {
-        this.currentPosition = currentPosition;
-    }
-
-    public void setProductsLoaded(LinkedList<Product> productsLoaded) {
-        this.productsLoaded = productsLoaded;
     }
 
     public LinkedList<Product> getProductsLoaded() {

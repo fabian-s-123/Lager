@@ -8,24 +8,28 @@ import java.util.LinkedList;
 public class Game {
 
     private Trolley trolley;
-    private Product product;
+    private Renderer renderer;
+    private Field[][] array;
+    private LinkedList<Product> allProducts;
 
-    public void playGame() throws IOException {
+    public Game() {
+        trolley = new Trolley(5);
+        allProducts = createProductList();
 
-        Trolley trolley = new Trolley(5);
-        LinkedList<Product> allProducts = createProductList();
-        int sumWeightAllProducts = calculateSumWeightAllProducts(allProducts);
-        Field[][] array = createArray(10, 10);
+        array = createArray(10, 10);
         setProductsToArray(allProducts, array);
         array[0][0].setTrolley(trolley); //Setzen der Startposition des Trolleys im Array auf 0,0
-        Renderer renderer = new Renderer(array);
+        renderer = new Renderer(array);
+    }
+
+    public void playGame() throws IOException {
+        int sumWeightAllProducts = calculateSumWeightAllProducts(allProducts);
         renderer.render();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String input;
         while ((input = br.readLine()) != null) {
             PositionTrolley beforeTrolleyMove = new PositionTrolley(trolley.getCurrentPosition().getX(), trolley.getCurrentPosition().getY());
-
             switch (input.toLowerCase()) {
                 case "w":
                     trolley.moveUp();
@@ -42,10 +46,9 @@ public class Game {
             }
 
             PositionTrolley afterTrolleyMove = new PositionTrolley(trolley.getCurrentPosition().getX(), trolley.getCurrentPosition().getY());
-            array[beforeTrolleyMove.getX()][beforeTrolleyMove.getY()].setTrolley(null);
-            array[afterTrolleyMove.getX()][afterTrolleyMove.getY()].setTrolley(trolley);
+            moveTrolleyOnField(beforeTrolleyMove,afterTrolleyMove);
 
-            if (afterTrolleyMove.getX() == 0 && afterTrolleyMove.getY() == 0) {
+            if (trolleyIsOrigin()) {
                 trolley.unload(array, sumWeightAllProducts);
             } else if (array[afterTrolleyMove.getX()][afterTrolleyMove.getY()].getProductList().size() > 0) {
                 trolley.load(array);
@@ -54,7 +57,16 @@ public class Game {
         }
     }
 
-    public LinkedList<Product> createProductList() {
+    private boolean trolleyIsOrigin() {
+        return trolley.getCurrentPosition().getX() == 0 && trolley.getCurrentPosition().getY() == 0;
+    }
+
+    private void moveTrolleyOnField(PositionTrolley origin, PositionTrolley target){
+        array[origin.getX()][origin.getY()].setTrolley(null);
+        array[target.getX()][target.getY()].setTrolley(trolley);
+    }
+
+    private LinkedList<Product> createProductList() {
         LinkedList<Product> allProducts = new LinkedList<>();
 
         allProducts.add(new Product("product1", 1));
@@ -69,7 +81,7 @@ public class Game {
         return allProducts;
     }
 
-    public int calculateSumWeightAllProducts(LinkedList<Product> allProducts) {
+    private int calculateSumWeightAllProducts(LinkedList<Product> allProducts) {
         int sumWeightAllProducts = 0;
         for (int i = 0; i < allProducts.size(); i++) {
             sumWeightAllProducts += allProducts.get(i).getWeight();
@@ -78,7 +90,7 @@ public class Game {
         return sumWeightAllProducts;
     }
 
-    public Field[][] createArray(int x1, int y1) {
+    private Field[][] createArray(int x1, int y1) {
         Field[][] array = new Field[x1][y1];
         for (int x = 0; x < 10; x++) {
             for (int y = 0; y < 10; y++) {
@@ -88,7 +100,7 @@ public class Game {
         return array;
     }
 
-    public void setProductsToArray(LinkedList<Product> allProducts, Field[][] array) {
+    private void setProductsToArray(LinkedList<Product> allProducts, Field[][] array) {
         for (int i = 0; i < allProducts.size(); i++) {
             Product currentProduct = allProducts.get(i);
             int xPosProd = currentProduct.getxPos();
@@ -96,5 +108,4 @@ public class Game {
             array[xPosProd][yPosProd].getProductList().addLast(currentProduct);
         }
     }
-
 }

@@ -8,7 +8,6 @@ public class Field {
     private LinkedList<Product> productList;
 
     public Field() {
-        //this.trolley
         this.productList = new LinkedList<>();
     }
 
@@ -29,11 +28,7 @@ public class Field {
     }
 
     public boolean isEmpty() {
-        if (productList.size() == 0 && trolley == null) {
-            return true;
-        } else {
-            return false;
-        }
+        return productList.size() == 0 && trolley == null;
     }
 
     @Override
@@ -45,10 +40,6 @@ public class Field {
         }
         return temp1 + temp2;
 
-    }
-
-    public void setProductList(LinkedList<Product> productList) {
-        this.productList = productList;
     }
 
 }
