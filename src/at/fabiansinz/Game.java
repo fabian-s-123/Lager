@@ -26,11 +26,10 @@ public class Game {
         allProducts.add(new Product("product9", 3));
 
         int sumWeightAllProducts = 0;
-        for (int i = 0; i<allProducts.size(); i++) {
+        for (int i = 0; i < allProducts.size(); i++) {
             sumWeightAllProducts += allProducts.get(i).getWeight();
         }
-        System.out.println("Gewicht aller Produkte:" + sumWeightAllProducts);
-
+        System.out.println("sum weight of all products: " + sumWeightAllProducts);
 
         Field[][] array = new Field[10][10];
 
@@ -61,21 +60,21 @@ public class Game {
             switch (input.toLowerCase()) {
                 case "w":
                     if (yPosTrolleyBefore == 0) {
-                        System.out.println("not possible");
+                        System.out.println("movement not possible");
                     } else {
                         yPosTrolleyAfter--;
                     }
                     break;
                 case "s":
                     if (yPosTrolleyBefore == 9) {
-                        System.out.println("not possible");
+                        System.out.println("movement not possible");
                     } else {
                         yPosTrolleyAfter++;
                     }
                     break;
                 case "a":
                     if (xPosTrolleyBefore == 0) {
-                        System.out.println("not possible");
+                        System.out.println("movement not possible");
                     } else {
                         xPosTrolleyAfter--;
                     }
@@ -95,7 +94,7 @@ public class Game {
             if (xPosTrolleyAfter == 0 && yPosTrolleyAfter == 0) {
                 if (trolley.getProductsLoaded().size() > 0) {
                     LinkedList<Product> productsOnTrolley = trolley.getProductsLoaded();
-                    while(productsOnTrolley.size() > 0) {
+                    while (productsOnTrolley.size() > 0) {
                         Product currentProduct = productsOnTrolley.pop();
                         array[0][0].getProductList().add(currentProduct);
                     }
@@ -105,47 +104,48 @@ public class Game {
                         sumWeightAllProducts00 += array[0][0].getProductList().get(i).getWeight();
                         System.out.println(array[0][0].getProductList().get(i).getName() + " " + array[0][0].getProductList().get(i).getWeight());
                     }
-                    System.out.println("Gewicht Produkte 00" + sumWeightAllProducts00);
+                    System.out.println("sum weight of all products at x[0] y[0]: " + sumWeightAllProducts00);
                     if (sumWeightAllProducts == sumWeightAllProducts00) {
-                        System.out.println("Hurra, alles eingesammelt!");
+                        System.out.println("Yay, all products successfully collected!");
                         System.exit(0);
                     }
                 }
             } else if (array[xPosTrolleyAfter][yPosTrolleyAfter].getProductList().size() > 0) {
-                System.out.println("Ein Feld mit Produkten wurde gefunden.");
-                //übernehmen der gefundenen Produktliste in foundedProducts
-                LinkedList<Product> foundedProducts = array[xPosTrolleyAfter][yPosTrolleyAfter].getProductList();
+                System.out.println("product found on this field");
+                //übernehmen der gefundenen Produktliste in foundProducts
+                LinkedList<Product> foundProducts = array[xPosTrolleyAfter][yPosTrolleyAfter].getProductList();
                 //herausfinden des aktuellen Gewichts der gefundenen Produkte
-                int currentWeightFoundedProducts = 0;
-                for (int i = 0; i < foundedProducts.size(); i++) {
-                    currentWeightFoundedProducts = currentWeightFoundedProducts + foundedProducts.get(i).getWeight();
+                int currentWeightFoundProducts = 0;
+                for (int i = 0; i < foundProducts.size(); i++) {
+                    currentWeightFoundProducts = currentWeightFoundProducts + foundProducts.get(i).getWeight();
                 }
                 //herausfinden der aktuellen Zuladekapazität des Trolleys
                 int currentWeightTrolley = trolley.getCurrentWeight();
                 int currentCapacityTrolley = trolley.getMaxWeight() - currentWeightTrolley;
-                if (currentWeightFoundedProducts > currentCapacityTrolley) {
-                    System.out.println("Die gefundenen Produkte bleiben liegen, sie sind aufgrund der bereits vom Trolley  aufgenommenen Ladung zu schwer.");
+                if (currentWeightFoundProducts > currentCapacityTrolley) {
+                    System.out.println("unable to add this product to the trolley\ncurrent load trolley: " + currentWeightTrolley + " -> open capacity trolley: " + currentCapacityTrolley +
+                            "\nweight product on this field: " + currentWeightFoundProducts);
                 } else {
-                    System.out.println("Der Trolley hat noch Platz für die gefundenen Produkte. Die aktuelle Ladung vom Trolley ändert sich. Jetzt hat er " + currentWeightTrolley + " Gewichtseinheiten.");
-                    currentWeightTrolley = currentWeightTrolley + currentWeightFoundedProducts;
+                    System.out.println("load trolley before adding the product: " + currentWeightTrolley +
+                            "\nweight product on this field: " + currentWeightFoundProducts + " -> product successfully added to trolley");
+                    currentWeightTrolley = currentWeightTrolley + currentWeightFoundProducts;
                     trolley.setCurrentWeight(currentWeightTrolley);
-                    System.out.println("Nach dem Aufladen hat er " + currentWeightTrolley + " Gewichtseinheiten. ");
+                    System.out.println("load trolley after adding the product: " + currentWeightTrolley);
 
-                    for (int i = 0; i < foundedProducts.size(); i++) {
+                    for (int i = 0; i < foundProducts.size(); i++) {
                         Product currentProduct = array[xPosTrolleyAfter][yPosTrolleyAfter].getProductList().pop();
                         trolley.getProductsLoaded().add(currentProduct);
                     }
-                    //hier geht es gleich weiter
                 }
-
-
             }
-
-
             renderer.render();
         }
-
-
     }
 
-}
+/*    private Field getFieldAtPosition(int x, int y) {
+        return array[x][y]
+    }
+
+    private Point move(){*/
+
+    }
